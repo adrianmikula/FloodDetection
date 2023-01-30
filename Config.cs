@@ -14,6 +14,10 @@ namespace FloodDetection
         public const string ALERT_TYPES_FILE_NAME = "AlertTypes.csv";
         public const string READINGS_FILE_PREFIX = "Data";
         public const int HOURS_TO_KEEP = 4;
-        
+
+        public const ConsoleColor FOREGROUND_ALERT_COLOUR = ConsoleColor.Black;
+        public const ConsoleColor DEFAULT_BACKGROUND_COLOUR = ConsoleColor.Black;
+        public const ConsoleColor DEFAULT_FOREGROUND_COLOUR = ConsoleColor.White;
+
     }
 }
