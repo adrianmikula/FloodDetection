@@ -15,5 +15,10 @@ namespace FloodDetection
 
         //}
 
+        //public static List<Alert> GetAlerts(List<Device> devices)
+        //{
+
+        //}
+
     }
 }

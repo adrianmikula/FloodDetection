@@ -46,18 +46,26 @@ namespace FloodDetection
             return this.ReadFile<Device>(Config.DATA_FOLDER + Config.DEVICES_DATA_FILE_NAME);
         }
 
+        public IEnumerable<AlertType> GetAlertTypes()
+        {
+            return this.ReadFile<AlertType>(Config.DATA_FOLDER + Config.ALERT_TYPES_FILE_NAME);
+        }
+
         public IEnumerable<Reading> GetRainfallReadings()
         {
             // get a list of all data files
             var dataFolder = Config.DATA_FOLDER;
-            var dataFiles = Directory.EnumerateFiles(dataFolder).Where(
-                f => f.StartsWith(Config.READINGS_FILE_PREFIX));
+            var dataFiles = Directory.EnumerateFiles(dataFolder).Where(f => 
+            {
+                return f.StartsWith(Config.DATA_FOLDER + Config.READINGS_FILE_PREFIX)
+                && f.EndsWith(".csv");
+            });
 
             // parse the CSV for each data file into an object 
             List<Reading> allReadings = new List<Reading>();
             foreach (string file in dataFiles)
             {
-                var readingsFromThisFile = this.ReadFile<Reading>(Config.READINGS_FILE_PREFIX);
+                var readingsFromThisFile = this.ReadFile<Reading>(file);
 
                 // combine all the readings into a single list
                 allReadings.AddRange(readingsFromThisFile);

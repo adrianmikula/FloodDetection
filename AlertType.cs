@@ -8,10 +8,11 @@ namespace FloodDetection
 {
     internal class AlertType
     {
-        public string name { get; set; }
-        public string colour { get; set; }
-        public decimal threshold { get; set; }
+        public string AlertName { get; set; }
+        public string Colour { get; set; }
+        public decimal Max { get; set; }
+        public decimal Min { get; set; }
 
-        public string algorithm { get; set; }
+        public string Property { get; set; }
     }
 }

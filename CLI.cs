@@ -13,6 +13,7 @@ namespace FloodDetection
             //IEnumerable<AlertType> alertTypes;
             IEnumerable<Device> devices;
             IEnumerable<Reading> readings;
+            IEnumerable < AlertType > alertTypes;
 
             // read in CSV rainfall data
             try
@@ -20,18 +21,37 @@ namespace FloodDetection
                 DataReader reader = new DataReader();
                 devices = reader.GetDevices();
                 readings = reader.GetRainfallReadings();
+                alertTypes = reader.GetAlertTypes();
             }
             catch (Exception e)
             {
                 PrintError("reading in CSV devices and rainfall data", e);
                 return;
             }
-            // organise data by device and filter out old data
-
             // perform calculations
             try
             {
+                // find the current time (using the latest timestamp) and filter out old data
+                DateTime currentTime = readings.Select(r => r.Time).Max();
+                DateTime earliestTimeToKeep = currentTime.AddHours(-1 * Config.HOURS_TO_KEEP);
+                IEnumerable<Reading> recentReadings = readings.Where(
+                    r => r.Time > earliestTimeToKeep);
 
+                // organise data by device 
+                foreach (Device device in devices)
+                {
+                    IEnumerable<Reading> deviceReadings = recentReadings.Where(
+                        r => r.DeviceID == device.DeviceID);
+                    if (deviceReadings.Count() > 0)
+                    {
+                        IEnumerable<decimal> rainfallValuesForThiDevice = deviceReadings.Select(
+                            r => r.Rainfall);
+
+                        // calculate aggregate data for this device
+                        device.MaxRainfall = rainfallValuesForThiDevice.Max();
+                        device.AverageRainfall = rainfallValuesForThiDevice.Average();
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -55,7 +75,8 @@ namespace FloodDetection
                 {
                     Console.WriteLine();
                     Console.WriteLine(device.DeviceName + ", " + device.Location);
-                    Console.WriteLine("Number of readings: " + device.NumberOfReadings);
+                    Console.WriteLine("Max Rainfall in the last " + Config.HOURS_TO_KEEP + " hours : " + device.MaxRainfall);
+                    Console.WriteLine("Average Rainfall in the last " + Config.HOURS_TO_KEEP + " hours : " + device.AverageRainfall);
                 }
             }
             catch (Exception e)

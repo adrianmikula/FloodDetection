@@ -11,9 +11,9 @@ namespace FloodDetection
         public int? DeviceID { get; set; }
         public string? DeviceName { get; set; }
         public string? Location { get; set; }
-        public decimal? TotalRainfall { get; set; }
+        public decimal? MaxRainfall { get; set; }
         public decimal? AverageRainfall { get; set; }
-        public int NumberOfReadings { get; set; }
+        //public int NumberOfReadings { get; set; }
 
 
 

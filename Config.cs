@@ -9,8 +9,9 @@ namespace FloodDetection
     internal abstract class Config
     {
         public const string CSV_DELIMITER = ",";
-        public const string DATA_FOLDER = "C:\\Source\\Exercises\\Interfuze\\";
+        public const string DATA_FOLDER = "C:\\Source\\Exercises\\Interfuze\\FloodDetection\\";
         public const string DEVICES_DATA_FILE_NAME = "Devices.csv";
+        public const string ALERT_TYPES_FILE_NAME = "AlertTypes.csv";
         public const string READINGS_FILE_PREFIX = "Data";
         public const int HOURS_TO_KEEP = 4;
         
