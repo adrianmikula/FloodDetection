@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FloodDetection
 {
-    internal class CLI
+    internal class Calculations
     {
         public static void PrintCurrentWarnings()
         {
@@ -48,9 +48,24 @@ namespace FloodDetection
                         IEnumerable<decimal> rainfallValuesForThiDevice = deviceReadings.Select(
                             r => r.Rainfall);
 
+                        // TODO calculate the trend - not working yet!
+                        //DateTime middleTime = currentTime.AddHours(-1 * Config.HOURS_TO_KEEP / 2);
+                        //IEnumerable<decimal> earlierReadings = deviceReadings.Where(
+                        //    r => (r.Time < middleTime) && (r.Time > earliestTimeToKeep)).Select(
+                        //    r => r.Rainfall);
+                        //IEnumerable<decimal> laterReadings = deviceReadings.Where(
+                        //    r => (r.Time < currentTime) && (r.Time > middleTime)).Select(
+                        //    r => r.Rainfall);
+
                         // calculate aggregate data for this device
                         device.MaxRainfall = rainfallValuesForThiDevice.Max();
                         device.AverageRainfall = rainfallValuesForThiDevice.Average();
+
+                        // TODO calculate the trend - not working yet!
+                        //var earlierAverage = earlierReadings.Average();
+                        //var laterAverage = laterReadings.Average();
+
+                        //device.Trend = laterAverage - earlierAverage;
                     }
                 }
             }
@@ -60,6 +75,9 @@ namespace FloodDetection
                 return;
             }
             // generate alerts
+            // I know I could have put this inside the previous for loop,
+            // but I prefer to keep the data aggregation & filtering separate from the 
+            // alert criteria / display formatting
             try
             {
                 // loop through each device and alert type
@@ -86,21 +104,7 @@ namespace FloodDetection
                         // if the criteria is met then generate an alert
                         if (meetsCriteria)
                         {
-                            ConsoleColor backgroundColour;
-                            Enum.TryParse<ConsoleColor>(alertType.Colour, true, out backgroundColour);
-                            //Type colourType = Type.GetType("ConsoleColor").GetProperty(alertType.Colour);
-                            //ConsoleColor backgroundColour = (ConsoleColor)Activator.CreateInstance(colourType);
-
-                            // set the console colours to the colour for this alert type
-                            Console.WriteLine();
-                            Console.BackgroundColor = backgroundColour;
-                            Console.ForegroundColor = Config.FOREGROUND_ALERT_COLOUR;
-                            Console.WriteLine(alertType.AlertName + " for " + device.DeviceName + " located in " + device.Location);
-                            
-                            // reset the console colours back to normal
-                            Console.BackgroundColor = Config.DEFAULT_BACKGROUND_COLOUR;
-                            Console.ForegroundColor = Config.DEFAULT_FOREGROUND_COLOUR;
-                            Console.WriteLine(alertType.Property + " is " + value);
+                            PrintAlert(alertType, device, value);
 
                             // exit the loop so we generate a maximum of one alert per device
                             break;
@@ -113,27 +117,32 @@ namespace FloodDetection
                 PrintError("generating alerts", e);
                 return;
             }
-            // print response
-            try
-            {
-                foreach (Device device in devices)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(device.DeviceName + ", " + device.Location);
-                    Console.WriteLine("Max Rainfall in the last " + Config.HOURS_TO_KEEP + " hours : " + device.MaxRainfall);
-                    Console.WriteLine("Average Rainfall in the last " + Config.HOURS_TO_KEEP + " hours : " + device.AverageRainfall);
-                }
-            }
-            catch (Exception e)
-            {
-                PrintError("printing response", e);
-                return;
-            }
         }
 
         public static void PrintError(string context, Exception error)
         {
             Console.Error.WriteLine("Error while " + context + " : " + error.Message);
+        }
+
+        public static void PrintAlert(AlertType alertType, Device device, decimal value)
+        {
+            ConsoleColor backgroundColour;
+            Enum.TryParse<ConsoleColor>(alertType.Colour, true, out backgroundColour);
+            //Type colourType = Type.GetType("ConsoleColor").GetProperty(alertType.Colour);
+            //ConsoleColor backgroundColour = (ConsoleColor)Activator.CreateInstance(colourType);
+
+            // set the console colours to the colour for this alert type
+            Console.WriteLine();
+            Console.BackgroundColor = backgroundColour;
+            Console.ForegroundColor = Config.FOREGROUND_ALERT_COLOUR;
+            Console.WriteLine(alertType.AlertName + " for " + device.DeviceName + " located in " + device.Location);
+
+            // reset the console colours back to normal
+            Console.BackgroundColor = Config.DEFAULT_BACKGROUND_COLOUR;
+            Console.ForegroundColor = Config.DEFAULT_FOREGROUND_COLOUR;
+            Console.WriteLine(alertType.Property + " is " + value);
+            Console.WriteLine("Trend is " + device.Trend);
+
         }
     }
 }

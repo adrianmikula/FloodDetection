@@ -14,6 +14,7 @@ namespace FloodDetection
         public decimal? MaxRainfall { get; set; }
         public decimal? AverageRainfall { get; set; }
         //public int NumberOfReadings { get; set; }
+        public decimal? Trend { get; set; }
 
 
 
