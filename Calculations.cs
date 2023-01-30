@@ -49,23 +49,23 @@ namespace FloodDetection
                             r => r.Rainfall);
 
                         // TODO calculate the trend - not working yet!
-                        //DateTime middleTime = currentTime.AddHours(-1 * Config.HOURS_TO_KEEP / 2);
-                        //IEnumerable<decimal> earlierReadings = deviceReadings.Where(
-                        //    r => (r.Time < middleTime) && (r.Time > earliestTimeToKeep)).Select(
-                        //    r => r.Rainfall);
-                        //IEnumerable<decimal> laterReadings = deviceReadings.Where(
-                        //    r => (r.Time < currentTime) && (r.Time > middleTime)).Select(
-                        //    r => r.Rainfall);
+                        DateTime middleTime = currentTime.AddHours(-1 * Config.HOURS_TO_KEEP / 2);
+                        IEnumerable<decimal> earlierReadings = deviceReadings.Where(
+                            r => (r.Time <= middleTime) && (r.Time >= earliestTimeToKeep)).Select(
+                            r => r.Rainfall);
+                        IEnumerable<decimal> laterReadings = deviceReadings.Where(
+                            r => (r.Time <= currentTime) && (r.Time >= middleTime)).Select(
+                            r => r.Rainfall);
 
                         // calculate aggregate data for this device
                         device.MaxRainfall = rainfallValuesForThiDevice.Max();
                         device.AverageRainfall = rainfallValuesForThiDevice.Average();
 
-                        // TODO calculate the trend - not working yet!
-                        //var earlierAverage = earlierReadings.Average();
-                        //var laterAverage = laterReadings.Average();
+                        // calculate the trend
+                        var earlierAverage = earlierReadings.Average();
+                        var laterAverage = laterReadings.Average();
 
-                        //device.Trend = laterAverage - earlierAverage;
+                        device.Trend = laterAverage - earlierAverage;
                     }
                 }
             }

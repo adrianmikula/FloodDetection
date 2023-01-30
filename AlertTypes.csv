@@ -1,5 +1,5 @@
 Alert Name,Colour,Property,Min,Max
 Green Alert,Green,AverageRainfall,0,10
-Amber Alert,Orange,AverageRainfall,10,15
+Amber Alert,Yellow,AverageRainfall,10,15
 Red Alert,Red,AverageRainfall,15,30
 Red Alert,Red,MaxRainfall,30,1000
